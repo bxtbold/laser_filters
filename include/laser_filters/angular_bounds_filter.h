@@ -71,6 +71,9 @@ namespace laser_filters
 
         double start_angle = input_scan.angle_min;
         double current_angle = input_scan.angle_min;
+        // manually calculating time_increment
+        int time_increment = input_scan.scan_time / input_scan.ranges.size();
+
         builtin_interfaces::msg::Time start_time = input_scan.header.stamp;
         unsigned int count = 0;
         //loop through the scan and truncate the beginning and the end of the scan as necessary
@@ -79,7 +82,7 @@ namespace laser_filters
           if(start_angle < lower_angle_){
             start_angle += input_scan.angle_increment;
             current_angle += input_scan.angle_increment;
-            start_time.set__sec(start_time.sec + input_scan.time_increment);
+            start_time.set__sec(start_time.sec + time_increment);
           }
           else{
             filtered_scan.ranges[count] = input_scan.ranges[i];
@@ -106,7 +109,7 @@ namespace laser_filters
         filtered_scan.angle_min = start_angle;
         filtered_scan.angle_max = current_angle;
         filtered_scan.angle_increment = input_scan.angle_increment;
-        filtered_scan.time_increment = input_scan.time_increment;
+        filtered_scan.time_increment = time_increment;
         filtered_scan.scan_time = input_scan.scan_time;
         filtered_scan.range_min = input_scan.range_min;
         filtered_scan.range_max = input_scan.range_max;
